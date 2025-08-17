@@ -1,0 +1,372 @@
+/* ============================
+   🎨 Tema Carrerita con Causa
+   ============================ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+:root {
+  --primary: #3B82F6; /* Azul alegre */
+  --primary-light: #E0F2FE;
+  --secondary: #FACC15; /* Amarillo vibrante */
+  --accent: #FB923C; /* Naranja cálido */
+  --success: #34D399;
+  --error: #EF4444;
+  --text: #1F2937;
+  --muted: #6B7280;
+  --card-bg: #ffffff;
+  --footer-bg: #1E3A8A;
+}
+
+body {
+  font-family: "Nunito", sans-serif;
+  background: linear-gradient(180deg, var(--primary-light), #fff);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.container {
+  padding: 0 14px;
+}
+
+/* ===================== 🔝 HEADER ===================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--primary);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  flex-wrap: wrap; /* deja que badge baje si no cabe */
+  gap: 8px;
+}
+
+.header .brand {
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header .badge {
+  background: white;
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Responsive tweaks */
+@media (min-width: 600px) {
+  .header {
+    padding: 14px 22px;
+  }
+  .header .brand { font-size: 1.1rem; }
+  .header .badge { font-size: 0.9rem; }
+}
+
+/* ===================== 🎯 HERO ===================== */
+.hero { text-align: center; margin: 20px 0 30px; }
+.hero img.photo {
+  width: 160px; height: 160px; border-radius: 50%;
+  border: 6px solid var(--primary); margin: 16px auto;
+  display: block; object-fit: cover;
+}
+.hero video {
+  width: 100%; border-radius: 16px; margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.hero h1 {
+  font-size: 2rem; font-weight: 800; color: var(--primary); margin: 8px 0;
+}
+.hero p { font-size: 1rem; color: var(--muted); margin-bottom: 12px; }
+
+/* ========== STEPPER NUEVO ========== */
+/* ========== STEPPER COMPACTO ========== */
+.stepper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6px 8px;         /* 👈 menos padding */
+  min-width: 54px;          /* 👈 más estrecho */
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: var(--muted);
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.step-item.active {
+  background: rgba(34,197,94,0.18);
+  border-color: rgba(34,197,94,0.25);
+  color: #059669;
+}
+
+.step-icon {
+  font-size: 1.1rem;        /* 👈 ícono más compacto */
+  line-height: 1;
+}
+
+.step-text {
+  font-size: 0.75rem;       /* 👈 texto más chico */
+  margin-top: 3px;
+}
+
+/* ===================== 📦 CARDS ===================== */
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 20px; margin: 16px 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+.card:hover { transform: translateY(-2px); }
+
+/* ===================== 🔘 BOTONES ===================== */
+button.cta {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border: none; color: white;
+  padding: 12px 20px; border-radius: 50px;
+  cursor: pointer; font-weight: 700; font-size: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; max-width: 420px; margin: 6px auto; display: block;
+}
+button.cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+button.cta:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ===================== 📝 INPUTS ===================== */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb; /* gris clarito */
+  background: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+/* Placeholder gris clarito */
+input::placeholder,
+textarea::placeholder { color: #9ca3af; }
+
+/* Focus: borde azul + glow sutil */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+}
+
+/* Select chic */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='gray'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+/* ===================== 📜 FOOTER ===================== */
+.footer {
+  background: var(--footer-bg);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 18px 18px 0 0;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 600px) {
+  .footer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+  }
+}
+
+/* ===================== ✅ TOAST ===================== */
+.toast {
+  position: fixed; bottom: 18px; left: 18px;
+  background: white; border-radius: 10px;
+  padding: 10px 16px; box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  font-weight: 600; display: flex; align-items: center;
+  animation: fadeInUp 0.3s ease;
+}
+.toast.success { border-left: 6px solid var(--success); }
+.toast.error { border-left: 6px solid var(--error); }
+.toast.info { border-left: 6px solid var(--primary); }
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ===================== 📊 TABLA ADMIN ===================== */
+.table { display: block; overflow-x: auto; white-space: nowrap; }
+.table table { width: 100%; border-collapse: collapse; }
+.table th, .table td {
+  padding: 10px 12px; border-bottom: 1px solid #e5e7eb;
+  text-align: left; font-size: 0.9rem;
+}
+.table th { background: var(--primary-light); font-weight: 700; color: var(--text); }
+
+/* ===================== 🎟️ BOLETO ===================== */
+.ticket {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  width: 24px; height: 24px;
+  background: var(--primary-light);
+  border-radius: 50%;
+  top: 50%; transform: translateY(-50%);
+  z-index: 2;
+}
+.ticket::before { left: -12px; }
+.ticket::after { right: -12px; }
+.ticket-divider {
+  width: 100%; border-top: 2px dashed var(--muted); margin: 14px 0;
+}
+.ticket-code {
+  font-size: 28px; font-weight: 800; letter-spacing: 3px;
+  margin: 12px 0; color: var(--primary);
+}
+.ticket-details {
+  color: var(--muted); font-size: 0.95rem;
+}
+
+/* ===================== 📱 ADMIN MOBILE CARDS ===================== */
+.admin-cards { display: flex; flex-direction: column; gap: 12px; }
+.admin-card {
+  background: white; border-radius: 12px;
+  padding: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.admin-card h4 { margin: 0 0 6px; font-size: 1rem; color: var(--primary); font-weight: 700; }
+.admin-card p { margin: 2px 0; font-size: 0.9rem; color: var(--text); }
+.admin-card .actions { display: flex; gap: 8px; margin-top: 10px; }
+.admin-card .actions button { flex: 1; }
+
+/* ===================== 📱 RESPONSIVE ADAPTATIONS ===================== */
+/* Ocultar tabla en móvil */
+@media (max-width: 768px) {
+  .table { display: none; }
+  .admin-cards { display: flex; }
+}
+@media (min-width: 769px) {
+  .admin-cards { display: none; }
+}
+
+/* Tabs admin adaptables */
+.admin-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.admin-tab {
+  flex: 1; padding: 10px 12px;
+  border-radius: 20px; border: 1px solid var(--muted);
+  text-align: center; font-weight: 600; font-size: 0.9rem;
+  white-space: nowrap; cursor: pointer; transition: all 0.2s ease;
+}
+.admin-tab.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+}
+.admin-tab:hover { background: var(--primary-light); }
+
+/* 📱 Tabs 2x2 en móviles */
+@media (max-width: 600px) {
+  .admin-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .admin-tab { white-space: normal; flex: initial; }
+}
+
+.card h3 {
+  margin-top: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.card ul {
+  margin: 6px 0 12px 18px;
+  padding: 0;
+}
+
+.card ul li {
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.countdown {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.countdown h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: var(--primary);
+}
+
+.countdown-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: rgba(0,0,0,0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.countdown-box span {
+  min-width: 40px;
+  text-align: center;
+  color: #111;
+}
+
+.countdown-finished {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 12px;
+  color: #059669; /* verde */
+  font-weight: 600;
+}
