@@ -490,20 +490,12 @@ function AdminPanel({ show }) {
 
   async function viewReceipt(path) {
     if (!path) return;
-    try {
-      const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
-      if (error) {
-        show('error', `Error al cargar recibo: ${error.message}`);
-        return;
-      }
-      if (!data?.signedUrl) {
-        show('error', 'No se pudo generar la URL del recibo');
-        return;
-      }
-      setPreviewUrl(data.signedUrl);
-    } catch (err) {
-      show('error', `Error inesperado: ${err.message}`);
+    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
+    if (error) {
+      show('error', `Error al cargar recibo: ${error.message}`);
+      return;
     }
+    setPreviewUrl(data.signedUrl);
   }
 
   function exportCsv() {
@@ -633,86 +625,108 @@ function AdminPanel({ show }) {
         {rows.length === 0 && !loading && <p style={{ color: 'var(--muted)' }}>Sin resultados</p>}
       </div>
 
-      {/* Modal comprobante */}
+      {/* Modal comprobante mejorado */}
       {previewUrl && (
         <div
+          className="receipt-modal-backdrop"
           style={{
             position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.8)',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 1000,
+            zIndex: 9999,
             padding: '20px',
           }}
-          onClick={() => setPreviewUrl(null)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setPreviewUrl(null);
+            }
+          }}
         >
           <div
-            className="card"
+            className="receipt-modal-content"
             style={{
-              maxWidth: '95vw',
-              maxHeight: '95vh',
-              overflow: 'hidden',
-              position: 'relative',
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '20px',
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              width: '800px',
               display: 'flex',
               flexDirection: 'column',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
             }}
-            onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="row"
-              style={{ justifyContent: 'space-between', marginBottom: '16px', flexShrink: 0 }}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '15px',
+                borderBottom: '1px solid #eee',
+                paddingBottom: '10px',
+              }}
             >
-              <h3 style={{ margin: 0 }}>Comprobante</h3>
-              <button className="cta" onClick={() => setPreviewUrl(null)}>
+              <h3 style={{ margin: 0, color: '#333' }}>Comprobante de Pago</h3>
+              <button
+                onClick={() => setPreviewUrl(null)}
+                style={{
+                  background: '#ff4757',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
                 ✕ Cerrar
               </button>
             </div>
             <div
               style={{
                 flex: 1,
-                overflow: 'hidden',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#f5f5f5',
+                alignItems: 'center',
+                backgroundColor: '#f8f9fa',
                 borderRadius: '8px',
+                padding: '10px',
+                minHeight: '400px',
               }}
             >
-              {previewUrl.toLowerCase().includes('.pdf') ? (
-                <iframe
-                  src={previewUrl}
-                  style={{
-                    width: '100%',
-                    height: '70vh',
-                    border: 'none',
-                    borderRadius: '4px',
-                  }}
-                  title="recibo"
-                />
-              ) : (
-                <img
-                  src={previewUrl}
-                  alt="Comprobante"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '70vh',
-                    objectFit: 'contain',
-                    borderRadius: '4px',
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                />
-              )}
-              <div style={{ display: 'none', textAlign: 'center', color: '#666' }}>
-                <p>Error al cargar la imagen</p>
-                <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="cta">
-                  Abrir en nueva pestaña
-                </a>
-              </div>
+              <ReceiptViewer
+                url={previewUrl}
+                onError={() => show('error', 'Error al cargar el comprobante')}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: '15px',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '10px',
+              }}
+            >
+              <button
+                onClick={() => window.open(previewUrl, '_blank')}
+                style={{
+                  background: '#2ed573',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '10px 20px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                🔗 Abrir en nueva pestaña
+              </button>
             </div>
           </div>
         </div>
