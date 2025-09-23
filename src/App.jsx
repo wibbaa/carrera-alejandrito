@@ -490,12 +490,20 @@ function AdminPanel({ show }) {
 
   async function viewReceipt(path) {
     if (!path) return;
-    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 600);
-    if (error) {
-      show('error', error.message);
-      return;
+    try {
+      const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
+      if (error) {
+        show('error', `Error al cargar recibo: ${error.message}`);
+        return;
+      }
+      if (!data?.signedUrl) {
+        show('error', 'No se pudo generar la URL del recibo');
+        return;
+      }
+      setPreviewUrl(data.signedUrl);
+    } catch (err) {
+      show('error', `Error inesperado: ${err.message}`);
     }
-    setPreviewUrl(data.signedUrl);
   }
 
   function exportCsv() {
@@ -631,25 +639,81 @@ function AdminPanel({ show }) {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.6)',
+            background: 'rgba(0,0,0,0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1000,
+            padding: '20px',
           }}
+          onClick={() => setPreviewUrl(null)}
         >
-          <div className="card" style={{ maxWidth: '90vw', maxHeight: '85vh', overflow: 'auto' }}>
-            <div className="row" style={{ justifyContent: 'space-between' }}>
-              <h3>Comprobante</h3>
+          <div
+            className="card"
+            style={{
+              maxWidth: '95vw',
+              maxHeight: '95vh',
+              overflow: 'hidden',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="row"
+              style={{ justifyContent: 'space-between', marginBottom: '16px', flexShrink: 0 }}
+            >
+              <h3 style={{ margin: 0 }}>Comprobante</h3>
               <button className="cta" onClick={() => setPreviewUrl(null)}>
-                Cerrar
+                ✕ Cerrar
               </button>
             </div>
-            <iframe
-              src={previewUrl}
-              style={{ width: '80vw', height: '70vh', border: 'none' }}
-              title="recibo"
-            />
+            <div
+              style={{
+                flex: 1,
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+              }}
+            >
+              {previewUrl.toLowerCase().includes('.pdf') ? (
+                <iframe
+                  src={previewUrl}
+                  style={{
+                    width: '100%',
+                    height: '70vh',
+                    border: 'none',
+                    borderRadius: '4px',
+                  }}
+                  title="recibo"
+                />
+              ) : (
+                <img
+                  src={previewUrl}
+                  alt="Comprobante"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '70vh',
+                    objectFit: 'contain',
+                    borderRadius: '4px',
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+              )}
+              <div style={{ display: 'none', textAlign: 'center', color: '#666' }}>
+                <p>Error al cargar la imagen</p>
+                <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="cta">
+                  Abrir en nueva pestaña
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}
