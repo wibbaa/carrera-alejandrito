@@ -189,7 +189,6 @@ function Hero({ onStart }) {
         style={{ maxHeight: 280 }}
       />
 
-      {/* 👇 Aquí el contador */}
       <Countdown targetDate="2025-09-28T07:00:00" />
 
       <button className="cta" style={{ marginTop: 14 }} onClick={onStart}>
@@ -395,44 +394,78 @@ function Ticket({ order, show }) {
   );
 }
 
-async function saveAsImage() {
-  const element = document.getElementById('ticket');
-  if (!element) return;
-  const canvas = await html2canvas(element, { scale: 2, backgroundColor: null });
-  const dataUrl = canvas.toDataURL('image/png');
-  const link = document.createElement('a');
-  link.href = dataUrl;
-  link.download = 'boleto.png';
-  link.click();
-}
+/* ========== RECEIPT VIEWER COMPONENT ========== */
+function ReceiptViewer({ url, onError }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-/* ========== HELPERS ========== */
-function genId(len = 6) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join(
-    ''
-  );
-}
-function genPaymentRef() {
-  const dt = new Date();
-  return `SAUL-${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}-${genId(4)}`;
-}
-function useToast() {
-  const [toast, setToast] = useState(null);
-  const show = (type, msg, ms = 2500) => {
-    setToast({ type, msg });
-    setTimeout(() => setToast(null), ms);
+  const handleLoad = () => setLoading(false);
+  const handleError = () => {
+    setLoading(false);
+    setError(true);
+    onError?.();
   };
-  const View = () => toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>;
-  return { show, View };
-}
-async function copy(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
+
+  if (error) {
+    return (
+      <div
+        style={{
+          textAlign: 'center',
+          padding: '40px',
+          color: '#666',
+        }}
+      >
+        <p>❌ Error al cargar el comprobante</p>
+        <button onClick={() => window.open(url, '_blank')} className="cta">
+          Abrir en nueva pestaña
+        </button>
+      </div>
+    );
   }
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: '#666',
+          }}
+        >
+          Cargando...
+        </div>
+      )}
+      {url.toLowerCase().includes('.pdf') ? (
+        <iframe
+          src={url}
+          style={{
+            width: '100%',
+            height: '500px',
+            border: 'none',
+            borderRadius: '4px',
+          }}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      ) : (
+        <img
+          src={url}
+          alt="Comprobante de pago"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '500px',
+            objectFit: 'contain',
+            borderRadius: '4px',
+          }}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      )}
+    </div>
+  );
 }
 
 /* ========== ADMIN PANEL ========== */
@@ -471,6 +504,7 @@ function AdminPanel({ show }) {
     else setRows(data);
     setLoading(false);
   }
+
   useEffect(() => {
     load();
   }, [status]);
@@ -512,6 +546,7 @@ function AdminPanel({ show }) {
   return (
     <section className="card" style={{ marginTop: 16 }}>
       <h2>Admin — Registros</h2>
+
       {/* Tabs para status */}
       <div className="admin-tabs">
         {['all', 'pending', 'verified', 'rejected'].map((st) => (
@@ -625,106 +660,31 @@ function AdminPanel({ show }) {
         {rows.length === 0 && !loading && <p style={{ color: 'var(--muted)' }}>Sin resultados</p>}
       </div>
 
-      {/* Modal comprobante mejorado */}
+      {/* Modal comprobante arreglado */}
       {previewUrl && (
         <div
           className="receipt-modal-backdrop"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '20px',
-          }}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setPreviewUrl(null);
             }
           }}
         >
-          <div
-            className="receipt-modal-content"
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '20px',
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              width: '800px',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '15px',
-                borderBottom: '1px solid #eee',
-                paddingBottom: '10px',
-              }}
-            >
-              <h3 style={{ margin: 0, color: '#333' }}>Comprobante de Pago</h3>
-              <button
-                onClick={() => setPreviewUrl(null)}
-                style={{
-                  background: '#ff4757',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-              >
+          <div className="receipt-modal-content">
+            <div className="receipt-modal-header">
+              <h3>Comprobante de Pago</h3>
+              <button onClick={() => setPreviewUrl(null)} className="receipt-modal-close">
                 ✕ Cerrar
               </button>
             </div>
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                padding: '10px',
-                minHeight: '400px',
-              }}
-            >
+            <div className="receipt-modal-body">
               <ReceiptViewer
                 url={previewUrl}
                 onError={() => show('error', 'Error al cargar el comprobante')}
               />
             </div>
-            <div
-              style={{
-                marginTop: '15px',
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '10px',
-              }}
-            >
-              <button
-                onClick={() => window.open(previewUrl, '_blank')}
-                style={{
-                  background: '#2ed573',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '10px 20px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-              >
+            <div className="receipt-modal-footer">
+              <button onClick={() => window.open(previewUrl, '_blank')} className="cta">
                 🔗 Abrir en nueva pestaña
               </button>
             </div>
@@ -733,6 +693,49 @@ function AdminPanel({ show }) {
       )}
     </section>
   );
+}
+
+/* ========== HELPERS ========== */
+async function saveAsImage() {
+  const element = document.getElementById('ticket');
+  if (!element) return;
+  const canvas = await html2canvas(element, { scale: 2, backgroundColor: null });
+  const dataUrl = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = 'boleto.png';
+  link.click();
+}
+
+function genId(len = 6) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join(
+    ''
+  );
+}
+
+function genPaymentRef() {
+  const dt = new Date();
+  return `SAUL-${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}-${genId(4)}`;
+}
+
+function useToast() {
+  const [toast, setToast] = useState(null);
+  const show = (type, msg, ms = 2500) => {
+    setToast({ type, msg });
+    setTimeout(() => setToast(null), ms);
+  };
+  const View = () => toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>;
+  return { show, View };
+}
+
+async function copy(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /* ========== MAIN APP ========== */
@@ -755,11 +758,13 @@ export default function App() {
     setRole(type);
     setStep(2);
   };
+
   const handleSubmitData = (data) => {
     const fullOrder = { ...data, paymentRef: genPaymentRef(), ticketCode: genId(8) };
     setOrder(fullOrder);
     setStep(3);
   };
+
   const handleUpload = (file) => setReceipt(file);
 
   async function handleFinalize() {
@@ -831,6 +836,7 @@ export default function App() {
             {step === 2 && (
               <RegistrationForm role={role} onBack={() => setStep(1)} onSubmit={handleSubmitData} />
             )}
+
             {step === 3 && order && (
               <PaymentStep
                 order={order}
@@ -840,18 +846,20 @@ export default function App() {
                 show={show}
               />
             )}
+
             {step === 4 && order && <Ticket order={order} show={show} />}
 
-            {/* 👇 Aquí aparecen tus nuevas secciones */}
             <Info />
             <Extras />
             <WhyParticipate />
           </>
         )}
+
         <footer className="footer">
           <span>Hecho con ❤️ en Nogales.</span>
           <span>Contacto: 631 10 88310 · TEApoyo Nogales</span>
         </footer>
+
         <Toast />
       </main>
     </>
