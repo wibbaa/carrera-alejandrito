@@ -275,18 +275,35 @@ function RegistrationForm({ role, onBack, onSubmit }) {
 /* ========== PAYMENT STEP ========== */
 function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
   const [file, setFile] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const clabe = import.meta.env.VITE_CLABE || '000000000000000000';
   const bank = import.meta.env.VITE_BANK || 'BANCO';
   const beneficiary = import.meta.env.VITE_BENEFICIARY || 'TEApoyo Nogales';
-  const handleFile = (e) => {
+
+  const handleFile = async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const max = 5 * 1024 * 1024;
     const okTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'image/jpg'];
-    if (!okTypes.includes(f.type)) return alert('Formato inválido.');
-    if (f.size > max) return alert('Archivo supera 5MB.');
+    if (!okTypes.includes(f.type)) {
+      show('error', 'Formato inválido. Solo se permiten imágenes (JPG, PNG, WEBP) o PDF.');
+      return;
+    }
+    if (f.size > max) {
+      show('error', 'El archivo supera 5MB. Por favor selecciona un archivo más pequeño.');
+      return;
+    }
+
     setFile(f);
+    setIsProcessing(true);
+    show('success', 'Comprobante cargado. Procesando registro...');
+
+    // Automáticamente procesar el archivo
+    onUpload(f);
+    await onFinalize();
+    setIsProcessing(false);
   };
+
   const feeFmt = order.fee.toLocaleString('es-MX');
   return (
     <section className="card">
@@ -333,24 +350,34 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
       </div>
       <div style={{ marginTop: 12 }}>
         <label className="upload">
-          Subir comprobante SPEI
-          <input type="file" accept="image/*,application/pdf" onChange={handleFile} />
+          {saving || isProcessing
+            ? 'Procesando registro...'
+            : 'Subir comprobante SPEI (se procesará automáticamente)'}
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={handleFile}
+            disabled={saving || isProcessing}
+          />
         </label>
-        {file && <p style={{ color: 'var(--muted)' }}>Archivo: {file.name}</p>}
+        {file && (
+          <div
+            style={{
+              marginTop: 8,
+              padding: 8,
+              backgroundColor: 'var(--success-bg)',
+              borderRadius: 4,
+            }}
+          >
+            <p style={{ color: 'var(--success)', margin: 0 }}>✅ Archivo cargado: {file.name}</p>
+            {(saving || isProcessing) && (
+              <p style={{ color: 'var(--muted)', margin: '4px 0 0 0', fontSize: '0.9em' }}>
+                Enviando tu registro...
+              </p>
+            )}
+          </div>
+        )}
       </div>
-      <button
-        className="cta"
-        style={{ marginTop: 12 }}
-        onClick={() => {
-          if (file) {
-            onUpload(file);
-            onFinalize();
-          }
-        }}
-        disabled={!file || saving}
-      >
-        {saving ? 'Enviando…' : 'Enviar comprobante y continuar'}
-      </button>
     </section>
   );
 }
@@ -768,10 +795,11 @@ export default function App() {
   const handleUpload = (file) => setReceipt(file);
 
   async function handleFinalize() {
-    if (!receipt)
-      return alert(
-        'Excelente, ya subiste el comprobante. Ahora vuelve a tocar el botón para enviarlo.'
-      );
+    if (!receipt) {
+      show('error', 'Por favor selecciona un comprobante antes de continuar');
+      return;
+    }
+
     try {
       setSaving(true);
       const { count } = await supabase
@@ -781,7 +809,10 @@ export default function App() {
           `ticket_code.eq.${order.ticketCode},payment_ref.eq.${order.paymentRef},email.eq.${order.email}`
         );
       if (count && count > 0) {
-        show('error', 'Registro duplicado');
+        show(
+          'error',
+          'Ya existe un registro con estos datos. Si tienes problemas, contacta al organizador.'
+        );
         return;
       }
       const receiptPath = await uploadReceipt(receipt, order.ticketCode);
