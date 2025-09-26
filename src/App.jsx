@@ -311,7 +311,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
 
   const handleSubmit = async () => {
     if (!file) {
-      show('error', 'Por favor selecciona un comprobante antes de continuar');
+      show('success', 'Subiste un comprobante, ahora presiona "Enviar comprobante y continuar"');
       return;
     }
 
