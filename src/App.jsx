@@ -280,7 +280,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
   const bank = import.meta.env.VITE_BANK || 'BANCO';
   const beneficiary = import.meta.env.VITE_BENEFICIARY || 'TEApoyo Nogales';
 
-  const handleFile = async (e) => {
+  const handleFile = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const max = 5 * 1024 * 1024;
@@ -295,13 +295,26 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
     }
 
     setFile(f);
-    setIsProcessing(true);
-    show('success', 'Comprobante cargado. Procesando registro...');
+    show('success', 'Archivo cargado correctamente. Ahora puedes enviarlo.');
+  };
 
-    // Automáticamente procesar el archivo
-    onUpload(f);
-    await onFinalize();
-    setIsProcessing(false);
+  const handleSubmit = async () => {
+    if (!file) {
+      show('error', 'Por favor selecciona un comprobante antes de continuar');
+      return;
+    }
+
+    setIsProcessing(true);
+    show('info', 'Enviando tu registro...');
+
+    try {
+      onUpload(file);
+      await onFinalize();
+    } catch (error) {
+      show('error', 'Error al enviar el registro');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const feeFmt = order.fee.toLocaleString('es-MX');
@@ -350,9 +363,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
       </div>
       <div style={{ marginTop: 12 }}>
         <label className="upload">
-          {saving || isProcessing
-            ? 'Procesando registro...'
-            : 'Subir comprobante SPEI (se procesará automáticamente)'}
+          {saving || isProcessing ? 'Procesando registro...' : 'Subir comprobante SPEI'}
           <input
             type="file"
             accept="image/*,application/pdf"
@@ -370,12 +381,20 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
             }}
           >
             <p style={{ color: 'var(--success)', margin: 0 }}>✅ Archivo cargado: {file.name}</p>
-            {(saving || isProcessing) && (
-              <p style={{ color: 'var(--muted)', margin: '4px 0 0 0', fontSize: '0.9em' }}>
-                Enviando tu registro...
-              </p>
-            )}
+            <p style={{ color: 'var(--muted)', margin: '4px 0 0 0', fontSize: '0.9em' }}>
+              Listo para enviar tu registro
+            </p>
           </div>
+        )}
+        {file && (
+          <button
+            className="cta"
+            style={{ marginTop: 12, width: '100%' }}
+            onClick={handleSubmit}
+            disabled={saving || isProcessing}
+          >
+            {saving || isProcessing ? 'Enviando registro...' : 'Enviar comprobante y continuar'}
+          </button>
         )}
       </div>
     </section>
