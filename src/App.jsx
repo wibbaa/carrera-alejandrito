@@ -729,8 +729,16 @@ function AdminPanel({ show }) {
             </p>
             <div className="actions">
               {r.receipt_path && (
-                <button className="cta" onClick={() => viewReceipt(r.receipt_path)}>
-                  Ver recibo
+                <button
+                  className="cta"
+                  onClick={() => viewReceipt(r.id, r.receipt_path)}
+                  style={{
+                    backgroundColor:
+                      openReceiptId === r.id ? 'var(--primary-dark)' : 'var(--primary)',
+                    opacity: openReceiptId === r.id ? 0.8 : 1,
+                  }}
+                >
+                  {openReceiptId === r.id ? 'Ocultar' : 'Ver recibo'}
                 </button>
               )}
               <button className="cta" onClick={() => changeStatus(r.id, 'verified')}>
@@ -745,36 +753,49 @@ function AdminPanel({ show }) {
         {rows.length === 0 && !loading && <p style={{ color: 'var(--muted)' }}>Sin resultados</p>}
       </div>
 
-      {/* Modal comprobante arreglado */}
-      {previewUrl && (
-        <div
-          className="receipt-modal-backdrop"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setPreviewUrl(null);
-            }
-          }}
-        >
-          <div className="receipt-modal-content">
-            <div className="receipt-modal-header">
-              <h3>Comprobante de Pago</h3>
-              <button onClick={() => setPreviewUrl(null)} className="receipt-modal-close">
-                ✕ Cerrar
-              </button>
-            </div>
-            <div className="receipt-modal-body">
+      {/* Mostrar recibo inline debajo de cada registro */}
+      {rows.map(
+        (r) =>
+          openReceiptId === r.id &&
+          receiptUrls[r.id] && (
+            <div
+              key={`receipt-${r.id}`}
+              style={{
+                marginTop: 16,
+                padding: 16,
+                border: '2px solid var(--primary)',
+                borderRadius: 8,
+                backgroundColor: 'var(--card-bg)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+              >
+                <h4 style={{ margin: 0 }}>Comprobante de {r.full_name}</h4>
+                <button
+                  onClick={() => setOpenReceiptId(null)}
+                  className="cta"
+                  style={{ padding: '4px 8px', fontSize: '0.9em' }}
+                >
+                  ✕ Cerrar
+                </button>
+              </div>
               <ReceiptViewer
-                url={previewUrl}
+                url={receiptUrls[r.id]}
                 onError={() => show('error', 'Error al cargar el comprobante')}
               />
+              <div style={{ marginTop: 12, textAlign: 'center' }}>
+                <button onClick={() => window.open(receiptUrls[r.id], '_blank')} className="cta">
+                  🔗 Abrir en nueva pestaña
+                </button>
+              </div>
             </div>
-            <div className="receipt-modal-footer">
-              <button onClick={() => window.open(previewUrl, '_blank')} className="cta">
-                🔗 Abrir en nueva pestaña
-              </button>
-            </div>
-          </div>
-        </div>
+          )
       )}
     </section>
   );
