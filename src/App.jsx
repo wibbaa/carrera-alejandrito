@@ -280,7 +280,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
   const bank = import.meta.env.VITE_BANK || 'BANCO';
   const beneficiary = import.meta.env.VITE_BENEFICIARY || 'TEApoyo Nogales';
 
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const max = 5 * 1024 * 1024;
@@ -295,7 +295,18 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
     }
 
     setFile(f);
-    show('success', 'Archivo cargado correctamente. Ahora puedes enviarlo.');
+    setIsProcessing(true);
+    show('success', 'Comprobante cargado. Procesando registro...');
+
+    // Automáticamente procesar el archivo
+    try {
+      onUpload(f);
+      await onFinalize();
+    } catch (error) {
+      show('error', 'Error al procesar el registro');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -363,7 +374,9 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
       </div>
       <div style={{ marginTop: 12 }}>
         <label className="upload">
-          {saving || isProcessing ? 'Procesando registro...' : 'Subir comprobante SPEI'}
+          {saving || isProcessing
+            ? 'Procesando registro...'
+            : 'Subir comprobante SPEI (se procesará automáticamente)'}
           <input
             type="file"
             accept="image/*,application/pdf"
