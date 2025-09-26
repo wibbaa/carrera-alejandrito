@@ -311,7 +311,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
 
   const handleSubmit = async () => {
     if (!file) {
-      show('success', 'Subiste un comprobante, ahora presiona "Enviar comprobante y continuar"');
+      show('error', 'Por favor selecciona un comprobante antes de continuar');
       return;
     }
 
@@ -548,7 +548,8 @@ function AdminPanel({ show }) {
   const [loading, setLoading] = useState(false);
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('all');
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [openReceiptId, setOpenReceiptId] = useState(null);
+  const [receiptUrls, setReceiptUrls] = useState({});
 
   async function load() {
     setLoading(true);
@@ -581,14 +582,31 @@ function AdminPanel({ show }) {
     await load();
   }
 
-  async function viewReceipt(path) {
+  async function viewReceipt(registrationId, path) {
     if (!path) return;
+
+    // Si ya está abierto este registro, lo cerramos
+    if (openReceiptId === registrationId) {
+      setOpenReceiptId(null);
+      return;
+    }
+
+    // Si ya tenemos la URL cacheada, la usamos
+    if (receiptUrls[registrationId]) {
+      setOpenReceiptId(registrationId);
+      return;
+    }
+
+    // Obtener nueva URL firmada
     const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
     if (error) {
       show('error', `Error al cargar recibo: ${error.message}`);
       return;
     }
-    setPreviewUrl(data.signedUrl);
+
+    // Guardar URL y abrir
+    setReceiptUrls((prev) => ({ ...prev, [registrationId]: data.signedUrl }));
+    setOpenReceiptId(registrationId);
   }
 
   function exportCsv() {
@@ -665,8 +683,16 @@ function AdminPanel({ show }) {
                 <td>{r.status}</td>
                 <td>
                   {r.receipt_path ? (
-                    <button className="cta" onClick={() => viewReceipt(r.receipt_path)}>
-                      Ver
+                    <button
+                      className="cta"
+                      onClick={() => viewReceipt(r.id, r.receipt_path)}
+                      style={{
+                        backgroundColor:
+                          openReceiptId === r.id ? 'var(--primary-dark)' : 'var(--primary)',
+                        opacity: openReceiptId === r.id ? 0.8 : 1,
+                      }}
+                    >
+                      {openReceiptId === r.id ? 'Ocultar' : 'Ver'}
                     </button>
                   ) : (
                     '—'
