@@ -37,8 +37,10 @@ function Info() {
         Inscripción: <strong>$200 MXN</strong>
       </p>
       <p style={{ color: 'var(--muted)' }}>
-        Alejandrito vive con Atrofia Muscular Espinal (AME), una condición que afecta sus músculos y movilidad. Todo lo recaudado será destinado a la
-        compra del <strong>exoesqueleto para la movilidad y rehabilitación de Alejandrito.</strong> ¡Gracias por sumarte!
+        Alejandrito vive con Atrofia Muscular Espinal (AME), una condición que afecta sus músculos
+        y movilidad. Todo lo recaudado será destinado a la compra del{' '}
+        <strong>exoesqueleto para la movilidad y rehabilitación de Alejandrito.</strong> ¡Gracias
+        por sumarte!
       </p>
     </section>
   );
@@ -50,9 +52,9 @@ function Extras() {
     <section className="card">
       <h2>🎉 Extras del evento</h2>
       <p>
-        Habrá <strong>medalla de finisher</strong> garantizada para los primeros 300 en cruzar la meta.
+        Habrá <strong>medalla de finisher</strong> garantizada para los primeros 300 en cruzar la
+        meta.
       </p>
-
       <h3>🏅 Premiación</h3>
       <p>Premiación para los tres primeros lugares en cada categoría:</p>
       <ul>
@@ -60,12 +62,10 @@ function Extras() {
         <li>Varonil</li>
       </ul>
       <p>🏆 Trofeo especial al equipo con más inscritos.</p>
-
     </section>
   );
 }
 
-/* ========== WHY PARTICIPATE ========== */
 /* ========== WHY PARTICIPATE ========== */
 function WhyParticipate() {
   return (
@@ -78,7 +78,7 @@ function WhyParticipate() {
       </p>
       <p>
         Todo lo recaudado en esta carrera será destinado a la compra de un{' '}
-        <strong>exoesqueleto Roki Robotics</strong>, una tecnología de origen tapatío que ayuda a personas con
+        <strong>exoesqueleto Roki Robotics</strong>, una tecnología que ayuda a personas con
         movilidad reducida a ponerse de pie, caminar y ganar independencia.
       </p>
       <p>
@@ -143,7 +143,7 @@ function ShareButton() {
         url: 'https://carrera-alejandrito.vercel.app/',
       });
     } else {
-      // fallback para desktop donde no existe el Web Share API
+      // fallback para desktop donde no existe Web Share API
       await copy('https://carrera-alejandrito.vercel.app/');
       alert('¡Link copiado al portapapeles!');
     }
@@ -178,6 +178,7 @@ function Hero({ onStart }) {
       <button className="cta" style={{ marginTop: 14 }} onClick={onStart}>
         Regístrate con estos pasos 👇
       </button>
+      <ShareButton />
     </section>
   );
 }
@@ -212,11 +213,13 @@ function RegistrationForm({ onBack, onSubmit }) {
   const [email, setEmail] = useState('');
   const [team, setTeam] = useState('');
   const fee = 200;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!fullName || !age || !phone || !email || !team) return;
     onSubmit({ fullName, age: Number(age), phone, email, team, fee });
   };
+
   return (
     <section className="card">
       <h2>Datos del participante</h2>
@@ -262,7 +265,6 @@ function RegistrationForm({ onBack, onSubmit }) {
 }
 
 /* ========== PAYMENT STEP ========== */
-// FIX: onFinalize now accepts fileOverride so we don't depend on stale React state
 function PaymentStep({ order, onFinalize, saving = false, show }) {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -289,9 +291,6 @@ function PaymentStep({ order, onFinalize, saving = false, show }) {
     setIsProcessing(true);
     show('success', 'Comprobante cargado. Procesando registro...');
 
-    // FIX: pass `f` directly instead of calling onUpload first and relying on
-    // React state being updated (it's async — receipt would still be null by
-    // the time handleFinalize checks it).
     try {
       await onFinalize(f);
     } catch (error) {
@@ -306,11 +305,8 @@ function PaymentStep({ order, onFinalize, saving = false, show }) {
       show('error', 'Por favor selecciona un comprobante antes de continuar');
       return;
     }
-
     setIsProcessing(true);
     show('info', 'Enviando tu registro...');
-
-    // FIX: same here — pass `file` directly
     try {
       await onFinalize(file);
     } catch (error) {
@@ -421,7 +417,9 @@ function Ticket({ order, show }) {
         <p className="ticket-code">{order.ticketCode}</p>
         <div className="ticket-divider"></div>
         <p className="ticket-details">Equipo: {order.team}</p>
-        <p className="ticket-details">${order.fee} MXN · {order.fullName}</p>
+        <p className="ticket-details">
+          ${order.fee} MXN · {order.fullName}
+        </p>
         <p className="ticket-details">{order.email}</p>
       </div>
       <div className="row" style={{ justifyContent: 'center', gap: 8, marginTop: 16 }}>
@@ -456,13 +454,7 @@ function ReceiptViewer({ url, onError }) {
 
   if (error) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '40px',
-          color: '#666',
-        }}
-      >
+      <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
         <p>❌ Error al cargar el comprobante</p>
         <button onClick={() => window.open(url, '_blank')} className="cta">
           Abrir en nueva pestaña
@@ -489,12 +481,7 @@ function ReceiptViewer({ url, onError }) {
       {url.toLowerCase().includes('.pdf') ? (
         <iframe
           src={url}
-          style={{
-            width: '100%',
-            height: '500px',
-            border: 'none',
-            borderRadius: '4px',
-          }}
+          style={{ width: '100%', height: '500px', border: 'none', borderRadius: '4px' }}
           onLoad={handleLoad}
           onError={handleError}
         />
@@ -502,12 +489,7 @@ function ReceiptViewer({ url, onError }) {
         <img
           src={url}
           alt="Comprobante de pago"
-          style={{
-            maxWidth: '100%',
-            maxHeight: '500px',
-            objectFit: 'contain',
-            borderRadius: '4px',
-          }}
+          style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain', borderRadius: '4px' }}
           onLoad={handleLoad}
           onError={handleError}
         />
@@ -547,7 +529,10 @@ function AdminPanel({ show }) {
       .select('*')
       .order('created_at', { ascending: false });
     if (status !== 'all') query = query.eq('status', status);
-    if (q) query = query.or(`full_name.ilike.%${q}%,email.ilike.%${q}%,ticket_code.ilike.%${q}%`);
+    if (q)
+      query = query.or(
+        `full_name.ilike.%${q}%,email.ilike.%${q}%,ticket_code.ilike.%${q}%`
+      );
     const { data, error } = await query;
     if (error) show('error', error.message);
     else setRows(data);
@@ -573,23 +558,19 @@ function AdminPanel({ show }) {
 
   async function viewReceipt(registrationId, path) {
     if (!path) return;
-
     if (openReceiptId === registrationId) {
       setOpenReceiptId(null);
       return;
     }
-
     if (receiptUrls[registrationId]) {
       setOpenReceiptId(registrationId);
       return;
     }
-
     const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
     if (error) {
       show('error', `Error al cargar recibo: ${error.message}`);
       return;
     }
-
     setReceiptUrls((prev) => ({ ...prev, [registrationId]: data.signedUrl }));
     setOpenReceiptId(registrationId);
   }
@@ -688,7 +669,17 @@ function AdminPanel({ show }) {
                     <button className="cta" onClick={() => changeStatus(r.id, 'verified')}>
                       Verificar
                     </button>
-                    <button className="cta" onClick={() => changeStatus(r.id, 'rejected')}>
+                    <button
+                      className="cta"
+                      onClick={async () => {
+                        await changeStatus(r.id, 'rejected');
+                        const msg = encodeURIComponent(
+                          `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
+                        );
+                        const phone = r.phone.replace(/\D/g, ''); // quita guiones, espacios, etc.
+                        window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                      }}
+                    >
                       Rechazar
                     </button>
                   </div>
@@ -729,7 +720,17 @@ function AdminPanel({ show }) {
               <button className="cta" onClick={() => changeStatus(r.id, 'verified')}>
                 ✔️
               </button>
-              <button className="cta" onClick={() => changeStatus(r.id, 'rejected')}>
+              <button
+                className="cta"
+                onClick={async () => {
+                  await changeStatus(r.id, 'rejected');
+                  const msg = encodeURIComponent(
+                    `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
+                  );
+                  const phone = r.phone.replace(/\D/g, ''); // quita guiones, espacios, etc.
+                  window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                }}
+              >
                 ❌
               </button>
             </div>
@@ -798,13 +799,6 @@ async function saveAsImage() {
   link.click();
 }
 
-function genId(len = 6) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join(
-    ''
-  );
-}
-
 function useToast() {
   const [toast, setToast] = useState(null);
   const show = (type, msg, ms = 2500) => {
@@ -838,22 +832,18 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  const handleStart = () => {
-    setStep(2);
-  };
+  const handleStart = () => setStep(2);
 
   const handleSubmitData = (data) => {
+    // ticketCode ya no se genera aquí — lo genera el trigger en Supabase (ALE-00001, etc.)
     const fullOrder = {
       ...data,
       paymentRef: `Donativo - ${data.fullName}`,
-      ticketCode: genId(8),
     };
     setOrder(fullOrder);
     setStep(3);
   };
 
-  // FIX: accepts the file directly from PaymentStep instead of reading from
-  // `receipt` state, which would be stale (null) due to async React state updates.
   async function handleFinalize(fileOverride) {
     if (!fileOverride) {
       show('error', 'Por favor, selecciona un comprobante antes de continuar.');
@@ -862,36 +852,58 @@ export default function App() {
 
     try {
       setSaving(true);
+
+      // Verificar duplicado por email y payment_ref (ya no tenemos ticketCode aún)
       const { count } = await supabase
         .from('registrations')
         .select('id', { count: 'exact', head: true })
-        .or(
-          `ticket_code.eq.${order.ticketCode},payment_ref.eq.${order.paymentRef},email.eq.${order.email}`
-        );
+        .or(`payment_ref.eq.${order.paymentRef},email.eq.${order.email}`);
+
       if (count && count > 0) {
-        show(
-          'error',
-          'Ya existe un registro con estos datos. Si tienes problemas, contacta al organizador.'
-        );
+        show('error', 'Ya existe un registro con estos datos. Si tienes problemas, contacta al organizador.');
         return;
       }
-      const receiptPath = await uploadReceipt(fileOverride, order.ticketCode);
-      const { error } = await supabase.from('registrations').insert({
-        full_name: order.fullName,
-        age: order.age,
-        phone: order.phone,
-        email: order.email,
-        team: order.team,
-        fee: order.fee,
-        payment_ref: order.paymentRef,
-        status: 'pending',
-        receipt_path: receiptPath,
-        ticket_code: order.ticketCode,
-      });
-      if (error) {
-        show('error', error.message);
+
+      // 1. Insertar sin receipt_path primero para obtener el ticket_code generado por el trigger
+      const { data: insertData, error: insertError } = await supabase
+        .from('registrations')
+        .insert({
+          full_name: order.fullName,
+          age: order.age,
+          phone: order.phone,
+          email: order.email,
+          team: order.team,
+          fee: order.fee,
+          payment_ref: order.paymentRef,
+          status: 'pending',
+        })
+        .select('ticket_code')
+        .single();
+
+      if (insertError) {
+        show('error', insertError.message);
         return;
       }
+
+      const generatedTicketCode = insertData.ticket_code;
+
+      // 2. Subir el recibo usando el folio generado como nombre de archivo
+      const receiptPath = await uploadReceipt(fileOverride, generatedTicketCode);
+
+      // 3. Actualizar el registro con la ruta del recibo
+      const { error: updateError } = await supabase
+        .from('registrations')
+        .update({ receipt_path: receiptPath })
+        .eq('ticket_code', generatedTicketCode);
+
+      if (updateError) {
+        show('error', updateError.message);
+        return;
+      }
+
+      // 4. Guardar el ticketCode en el order para mostrarlo en el Ticket
+      setOrder((prev) => ({ ...prev, ticketCode: generatedTicketCode }));
+
       show('success', 'Tu registro fue enviado, ¡Gracias!');
       setStep(4);
     } catch (err) {
@@ -918,7 +930,6 @@ export default function App() {
                 <button className="cta" onClick={handleStart}>
                   👟 ¡Quiero unirme! · $200
                 </button>
-                <ShareButton />
               </section>
             )}
 
