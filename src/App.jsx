@@ -558,6 +558,7 @@ function AdminPanel({ show }) {
 
   async function viewReceipt(registrationId, path) {
     if (!path) return;
+    const normalizedPath = String(path).trim().replace(/^\/+/, '');
     if (openReceiptId === registrationId) {
       setOpenReceiptId(null);
       return;
@@ -566,8 +567,9 @@ function AdminPanel({ show }) {
       setOpenReceiptId(registrationId);
       return;
     }
-    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
+    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(normalizedPath, 3600);
     if (error) {
+      console.error('createSignedUrl failed', normalizedPath, error);
       show('error', `Error al cargar recibo: ${error.message}`);
       return;
     }

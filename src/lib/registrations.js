@@ -11,7 +11,7 @@ export async function uploadReceipt(file, ticketCode) {
     .upload(path, file, { cacheControl: '3600', upsert: false });
 
   if (error) throw error;
-  return data.path;
+  return String(data.path || '').trim().replace(/^\/+/, '');
 }
 
 export async function createRegistration(payload) {
