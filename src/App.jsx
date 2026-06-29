@@ -133,6 +133,29 @@ function Countdown({ targetDate }) {
   );
 }
 
+/* ========== SHARE BUTTON ========== */
+function ShareButton() {
+  const handleShare = async () => {
+    if (navigator.share) {
+      await navigator.share({
+        title: 'Carrera por Alejandrito 💙',
+        text: '¡Corre con el corazón! Apoya a Alejandrito inscribiéndote a esta carrera benéfica de 5KM. Todo lo recaudado va a su exoesqueleto 💚',
+        url: 'https://carrera-alejandrito.vercel.app/',
+      });
+    } else {
+      // fallback para desktop donde no existe el Web Share API
+      await copy('https://carrera-alejandrito.vercel.app/');
+      alert('¡Link copiado al portapapeles!');
+    }
+  };
+
+  return (
+    <button className="cta" onClick={handleShare} style={{ width: '100%', marginTop: 12 }}>
+      📲 Compartir esta causa
+    </button>
+  );
+}
+
 /* ========== HERO ========== */
 function Hero({ onStart }) {
   return (
@@ -151,9 +174,7 @@ function Hero({ onStart }) {
         poster="/media/alejandrito.jpeg"
         style={{ maxHeight: 280 }}
       />
-
       <Countdown targetDate="2026-07-12T06:30:00" />
-
       <button className="cta" style={{ marginTop: 14 }} onClick={onStart}>
         Regístrate con estos pasos 👇
       </button>
@@ -897,6 +918,7 @@ export default function App() {
                 <button className="cta" onClick={handleStart}>
                   👟 ¡Quiero unirme! · $200
                 </button>
+                <ShareButton />
               </section>
             )}
 
