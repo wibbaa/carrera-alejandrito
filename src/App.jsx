@@ -178,7 +178,6 @@ function Hero({ onStart }) {
       <button className="cta" style={{ marginTop: 14 }} onClick={onStart}>
         Regístrate con estos pasos 👇
       </button>
-      <ShareButton />
     </section>
   );
 }
@@ -556,9 +555,28 @@ function AdminPanel({ show }) {
     await load();
   }
 
+  async function getReceiptUrl(path) {
+    const normalizedPath = String(path).trim().replace(/^\/+/, '');
+
+    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(normalizedPath, 3600);
+    if (!error && data?.signedUrl) {
+      return data.signedUrl;
+    }
+
+    console.warn('createSignedUrl failed, trying public url fallback', normalizedPath, error);
+    const { data: publicData, error: publicError } = await supabase.storage
+      .from('receipts')
+      .getPublicUrl(normalizedPath);
+
+    if (!publicError && publicData?.publicUrl) {
+      return publicData.publicUrl;
+    }
+
+    throw error || publicError || new Error('No URL available for receipt');
+  }
+
   async function viewReceipt(registrationId, path) {
     if (!path) return;
-    const normalizedPath = String(path).trim().replace(/^\/+/, '');
     if (openReceiptId === registrationId) {
       setOpenReceiptId(null);
       return;
@@ -567,14 +585,15 @@ function AdminPanel({ show }) {
       setOpenReceiptId(registrationId);
       return;
     }
-    const { data, error } = await supabase.storage.from('receipts').createSignedUrl(normalizedPath, 3600);
-    if (error) {
-      console.error('createSignedUrl failed', normalizedPath, error);
+
+    try {
+      const signedUrl = await getReceiptUrl(path);
+      setReceiptUrls((prev) => ({ ...prev, [registrationId]: signedUrl }));
+      setOpenReceiptId(registrationId);
+    } catch (error) {
+      console.error('viewReceipt failed for', path, error);
       show('error', `Error al cargar recibo: ${error.message}`);
-      return;
     }
-    setReceiptUrls((prev) => ({ ...prev, [registrationId]: data.signedUrl }));
-    setOpenReceiptId(registrationId);
   }
 
   function exportCsv() {
@@ -932,6 +951,7 @@ export default function App() {
                 <button className="cta" onClick={handleStart}>
                   👟 ¡Quiero unirme! · $200
                 </button>
+                <ShareButton />
               </section>
             )}
 
