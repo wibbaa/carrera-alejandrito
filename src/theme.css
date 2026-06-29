@@ -4,10 +4,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
 :root {
-  --primary: #3B82F6; /* Azul alegre */
+  --primary: #0033ff; /* Azul */
   --primary-light: #E0F2FE;
-  --secondary: #FACC15; /* Amarillo vibrante */
-  --accent: #FB923C; /* Naranja cálido */
+  --secondary: #faf615; /* Amarillo vibrante */
+  --accent: #008214; /* Verde */
   --success: #34D399;
   --error: #EF4444;
   --text: #1F2937;

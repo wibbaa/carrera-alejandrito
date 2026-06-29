@@ -12,9 +12,9 @@ function Header() {
         <span role="img" aria-label="corazón">
           💙
         </span>
-        <span>Todos por Saúl · TEApoyo Nogales</span>
+        <span>Apoya a Alejandrito · AltruistamenteLocos</span>
       </div>
-      <span className="badge">Carrera con causa · 5K</span>
+      <span className="badge">Carrera con causa · 5KM</span>
     </header>
   );
 }
@@ -23,22 +23,22 @@ function Header() {
 function Info() {
   return (
     <section className="card" style={{ marginTop: 16 }}>
-      <h2 style={{ marginTop: 0 }}>Carrera con Causa: Todos por Saúl</h2>
+      <h2 style={{ marginTop: 0 }}>Carrera con Causa: ¡Corremos por Alejandrito!</h2>
       <p style={{ color: 'var(--muted)' }}>
-        Organiza <strong>TEApoyo Nogales</strong>
+        Organiza <strong>AltruistamenteLocos</strong>
       </p>
       <p>
-        📅 Domingo 28 de septiembre <br />
-        ⏰ 7:00 a.m. <br />
+        📅 Domingo 12 de julio <br />
+        ⏰ 6:30 a.m. <br />
         📍 Plaza Miguel Hidalgo (salida y meta) <br />
         📏 5 kilómetros
       </p>
       <p>
-        Corredores: <strong>$200 MXN</strong> <br /> Caminantes: <strong>$100 MXN</strong>
+        Inscripción: <strong>$200 MXN</strong>
       </p>
       <p style={{ color: 'var(--muted)' }}>
-        Tu apoyo es para los estudios médicos de Saúl, un gran niño con autismo. ¡Gracias por
-        sumarte!
+        Alejandrito vive con Atrofia Muscular Espinal (AME), una condición que afecta sus músculos y movilidad. Todo lo recaudado será destinado a la
+        compra del <strong>exoesqueleto para la movilidad y rehabilitación de Alejandrito.</strong> ¡Gracias por sumarte!
       </p>
     </section>
   );
@@ -50,80 +50,43 @@ function Extras() {
     <section className="card">
       <h2>🎉 Extras del evento</h2>
       <p>
-        Al final habrá <strong>polvo de colores</strong> para celebrar, para quien guste quedarse.
-      </p>
-
-      <h3>💲 Inscripciones</h3>
-      <p>
-        <strong>Corredores: $200 MXN</strong>
-      </p>
-      <ul>
-        <li>Incluye número</li>
-        <li>Hidratación</li>
-        <li>Un refrigerio energético</li>
-        <li>Participación en rifas</li>
-      </ul>
-      <p>
-        <strong>Caminantes: $100 MXN</strong>
-      </p>
-      <ul>
-        <li>Incluye rifas (sin número ni medalla)</li>
-      </ul>
-      <p style={{ color: 'var(--muted)' }}>
-        🙌 Participan sin categoría, integrando a familias y comunidad.
+        Habrá <strong>medalla de finisher</strong> garantizada para los primeros 300 en cruzar la meta.
       </p>
 
       <h3>🏅 Premiación</h3>
-      <p>Medallas para los tres primeros lugares en cada categoría:</p>
+      <p>Premiación para los tres primeros lugares en cada categoría:</p>
       <ul>
-        <li>19 años y menores</li>
-        <li>20–29</li>
-        <li>30–39</li>
-        <li>40–49</li>
-        <li>50–59</li>
-        <li>60+</li>
+        <li>Femenil</li>
+        <li>Varonil</li>
       </ul>
-      <p>🏆 Trofeo al ganador absoluto hombre y mujer.</p>
+      <p>🏆 Trofeo especial al equipo con más inscritos.</p>
 
-      <h3>🎁 Rifas</h3>
-      <p>Todos los participantes registrados entran a varias rifas durante el evento.</p>
     </section>
   );
 }
 
+/* ========== WHY PARTICIPATE ========== */
 /* ========== WHY PARTICIPATE ========== */
 function WhyParticipate() {
   return (
     <section className="card">
       <h2>💙 ¿Por qué participar?</h2>
       <p>
-        Esta carrera tiene como finalidad apoyar los estudios médicos de <strong>Saúl</strong>, un
-        niño de 14 años con autismo severo. Sus padres luchan incansablemente por encontrar un
-        diagnóstico y tratamiento adecuados.
+        Alejandrito vive con <strong>Atrofia Muscular Espinal (AME)</strong>, una condición que
+        afecta sus músculos y movilidad. Su familia trabaja incansablemente para darle una mejor
+        calidad de vida.
       </p>
       <p>
-        Aunque inicialmente se consideró un tratamiento con células madre en Monterrey, ahora los
-        especialistas recomiendan continuar con investigaciones profundas, pues ni medicamentos ni
-        terapias han sido efectivos.
+        Todo lo recaudado en esta carrera será destinado a la compra de un{' '}
+        <strong>exoesqueleto Roki Robotics</strong>, una tecnología de origen tapatío que ayuda a personas con
+        movilidad reducida a ponerse de pie, caminar y ganar independencia.
       </p>
       <p>
-        <strong>Tu apoyo es fundamental</strong> para brindar esperanza y soluciones a Saúl y su
-        familia.
+        Con tu participación, Alejandrito estará más cerca de lograr sus sueños y ganar
+        independencia. <strong>Tu apoyo hace la diferencia.</strong>
       </p>
       <p>
-        Únete a esta causa y sé parte del cambio. <strong>TEApoyo Nogales</strong>, un colectivo de
-        familias, organiza esta carrera con mucho corazón para visibilizar y apoyar el autismo en la
-        comunidad.
-      </p>
-      <p>
-        Durante el evento, podrás apoyar también a madres emprendedoras que ofrecerán sus productos
-        en la plaza.
-      </p>
-      <p>
-        <em>
-          Corre, camina, participa y demuestra que juntos podemos construir un Nogales más
-          inclusivo.
-        </em>
+        <em>Juntos podemos más. 💚</em>
       </p>
     </section>
   );
@@ -175,21 +138,21 @@ function Hero({ onStart }) {
   return (
     <section className="hero">
       <img
-        src="/media/logo.jpg"
-        alt="TEApoyo Nogales"
+        src="/media/logo2.jpeg"
+        alt="AltruistamenteLocos"
         style={{ maxHeight: 100, margin: '0 auto 16px' }}
       />
-      <img src="/media/saul.jpg" alt="Saúl" className="photo" />
+      <img src="/media/alejandrito2.jpeg" alt="Alejandrito" className="photo" />
       <h1>Corre con el corazón 💙</h1>
-      <p>¿Quién es Saúl? ¡Conócelo con este video! 👇</p>
+      <p>¿Quién es Alejandrito? ¡Conócelo con este video! 👇</p>
       <video
-        src="/media/video-bio.mp4"
+        src="/media/video-bio.mov"
         controls
-        poster="/media/saul.jpg"
+        poster="/media/alejandrito.jpeg"
         style={{ maxHeight: 280 }}
       />
 
-      <Countdown targetDate="2025-09-28T07:00:00" />
+      <Countdown targetDate="2026-07-12T06:30:00" />
 
       <button className="cta" style={{ marginTop: 14 }} onClick={onStart}>
         Regístrate con estos pasos 👇
@@ -201,7 +164,7 @@ function Hero({ onStart }) {
 /* ========== STEPPER ========== */
 function Stepper({ step }) {
   const labels = [
-    { icon: '📝', text: 'Tipo' },
+    { icon: '📝', text: 'Registro' },
     { icon: '💾', text: 'Datos' },
     { icon: '💲', text: 'Pago' },
     { icon: '🎟️', text: 'Tu boleto' },
@@ -221,20 +184,21 @@ function Stepper({ step }) {
 }
 
 /* ========== REGISTRATION FORM ========== */
-function RegistrationForm({ role, onBack, onSubmit }) {
+function RegistrationForm({ onBack, onSubmit }) {
   const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const fee = role === 'runner' ? 200 : 100;
+  const [team, setTeam] = useState('');
+  const fee = 200;
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!fullName || !age || !phone || !email) return;
-    onSubmit({ fullName, age: Number(age), phone, email, role, fee });
+    if (!fullName || !age || !phone || !email || !team) return;
+    onSubmit({ fullName, age: Number(age), phone, email, team, fee });
   };
   return (
     <section className="card">
-      <h2>Datos del participante — {role === 'runner' ? 'Corredor' : 'Caminante'}</h2>
+      <h2>Datos del participante</h2>
       <form onSubmit={handleSubmit} className="form-grid">
         <label>
           Nombre completo
@@ -259,6 +223,10 @@ function RegistrationForm({ role, onBack, onSubmit }) {
           Correo electrónico
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
+        <label>
+          Nombre del equipo
+          <input value={team} onChange={(e) => setTeam(e.target.value)} required />
+        </label>
         <div className="row" style={{ marginTop: 12 }}>
           <button type="button" className="cta" onClick={onBack}>
             Cambié de opinión...
@@ -273,16 +241,18 @@ function RegistrationForm({ role, onBack, onSubmit }) {
 }
 
 /* ========== PAYMENT STEP ========== */
-function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
+// FIX: onFinalize now accepts fileOverride so we don't depend on stale React state
+function PaymentStep({ order, onFinalize, saving = false, show }) {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const clabe = import.meta.env.VITE_CLABE || '000000000000000000';
+  const clabe = import.meta.env.VITE_NUMCARD || '0000000000000000';
   const bank = import.meta.env.VITE_BANK || 'BANCO';
-  const beneficiary = import.meta.env.VITE_BENEFICIARY || 'TEApoyo Nogales';
+  const beneficiary = import.meta.env.VITE_BENEFICIARY || 'Laura Gloriela Ayala Cruz';
 
   const handleFile = async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
+
     const max = 5 * 1024 * 1024;
     const okTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'image/jpg'];
     if (!okTypes.includes(f.type)) {
@@ -298,10 +268,11 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
     setIsProcessing(true);
     show('success', 'Comprobante cargado. Procesando registro...');
 
-    // Automáticamente procesar el archivo
+    // FIX: pass `f` directly instead of calling onUpload first and relying on
+    // React state being updated (it's async — receipt would still be null by
+    // the time handleFinalize checks it).
     try {
-      onUpload(f);
-      await onFinalize();
+      await onFinalize(f);
     } catch (error) {
       show('error', 'Error al procesar el registro');
     } finally {
@@ -318,9 +289,9 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
     setIsProcessing(true);
     show('info', 'Enviando tu registro...');
 
+    // FIX: same here — pass `file` directly
     try {
-      onUpload(file);
-      await onFinalize();
+      await onFinalize(file);
     } catch (error) {
       show('error', 'Error al enviar el registro');
     } finally {
@@ -343,7 +314,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
           <strong>Banco:</strong> {bank}
         </p>
         <p>
-          <strong>CLABE:</strong> {clabe}
+          <strong>Tarjeta:</strong> {clabe}
         </p>
         <p>
           <strong>Referencia/Concepto:</strong> {order.paymentRef}
@@ -369,7 +340,7 @@ function PaymentStep({ order, onUpload, onFinalize, saving = false, show }) {
             show(ok ? 'success' : 'error', ok ? 'CLABE copiada' : 'Error');
           }}
         >
-          Copiar CLABE
+          Copiar Tarjeta
         </button>
       </div>
       <div style={{ marginTop: 12 }}>
@@ -428,12 +399,9 @@ function Ticket({ order, show }) {
         </p>
         <p className="ticket-code">{order.ticketCode}</p>
         <div className="ticket-divider"></div>
-        <p className="ticket-details">
-          {order.role === 'runner' ? '👟 Corredor' : '🚶 Caminante'} · ${order.fee} MXN
-        </p>
-        <p className="ticket-details">
-          {order.fullName} · {order.email}
-        </p>
+        <p className="ticket-details">Equipo: {order.team}</p>
+        <p className="ticket-details">${order.fee} MXN · {order.fullName}</p>
+        <p className="ticket-details">{order.email}</p>
       </div>
       <div className="row" style={{ justifyContent: 'center', gap: 8, marginTop: 16 }}>
         <button
@@ -585,26 +553,22 @@ function AdminPanel({ show }) {
   async function viewReceipt(registrationId, path) {
     if (!path) return;
 
-    // Si ya está abierto este registro, lo cerramos
     if (openReceiptId === registrationId) {
       setOpenReceiptId(null);
       return;
     }
 
-    // Si ya tenemos la URL cacheada, la usamos
     if (receiptUrls[registrationId]) {
       setOpenReceiptId(registrationId);
       return;
     }
 
-    // Obtener nueva URL firmada
     const { data, error } = await supabase.storage.from('receipts').createSignedUrl(path, 3600);
     if (error) {
       show('error', `Error al cargar recibo: ${error.message}`);
       return;
     }
 
-    // Guardar URL y abrir
     setReceiptUrls((prev) => ({ ...prev, [registrationId]: data.signedUrl }));
     setOpenReceiptId(registrationId);
   }
@@ -662,7 +626,7 @@ function AdminPanel({ show }) {
             <tr>
               <th>Creado</th>
               <th>Nombre</th>
-              <th>Rol</th>
+              <th>Equipo</th>
               <th>Monto</th>
               <th>Email</th>
               <th>Ticket</th>
@@ -676,7 +640,7 @@ function AdminPanel({ show }) {
               <tr key={r.id}>
                 <td>{new Date(r.created_at).toLocaleString()}</td>
                 <td>{r.full_name}</td>
-                <td>{r.role}</td>
+                <td>{r.team || '—'}</td>
                 <td>${r.fee}</td>
                 <td>{r.email}</td>
                 <td>{r.ticket_code}</td>
@@ -722,7 +686,7 @@ function AdminPanel({ show }) {
             <p>📧 {r.email}</p>
             <p>🎫 {r.ticket_code}</p>
             <p>
-              {r.role === 'runner' ? '👟 Corredor' : '🚶 Caminante'} · ${r.fee}
+              Equipo: {r.team || '—'} · ${r.fee}
             </p>
             <p>
               Status: <strong>{r.status}</strong>
@@ -787,7 +751,7 @@ function AdminPanel({ show }) {
               </div>
               <ReceiptViewer
                 url={receiptUrls[r.id]}
-                onError={() => show('error', 'Error al cargar el comprobante')}
+                onError={() => show('error', 'Error al cargar el comprobante.')}
               />
               <div style={{ marginTop: 12, textAlign: 'center' }}>
                 <button onClick={() => window.open(receiptUrls[r.id], '_blank')} className="cta">
@@ -820,11 +784,6 @@ function genId(len = 6) {
   );
 }
 
-function genPaymentRef() {
-  const dt = new Date();
-  return `SAUL-${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}-${genId(4)}`;
-}
-
 function useToast() {
   const [toast, setToast] = useState(null);
   const show = (type, msg, ms = 2500) => {
@@ -848,9 +807,7 @@ async function copy(text) {
 export default function App() {
   const { show, View: Toast } = useToast();
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState(null);
   const [order, setOrder] = useState(null);
-  const [receipt, setReceipt] = useState(null);
   const [saving, setSaving] = useState(false);
   const [isAdmin, setIsAdmin] = useState(window.location.hash === '#admin');
 
@@ -860,22 +817,25 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  const handleStart = (type) => {
-    setRole(type);
+  const handleStart = () => {
     setStep(2);
   };
 
   const handleSubmitData = (data) => {
-    const fullOrder = { ...data, paymentRef: genPaymentRef(), ticketCode: genId(8) };
+    const fullOrder = {
+      ...data,
+      paymentRef: `Donativo - ${data.fullName}`,
+      ticketCode: genId(8),
+    };
     setOrder(fullOrder);
     setStep(3);
   };
 
-  const handleUpload = (file) => setReceipt(file);
-
-  async function handleFinalize() {
-    if (!receipt) {
-      show('error', 'Por favor selecciona un comprobante antes de continuar');
+  // FIX: accepts the file directly from PaymentStep instead of reading from
+  // `receipt` state, which would be stale (null) due to async React state updates.
+  async function handleFinalize(fileOverride) {
+    if (!fileOverride) {
+      show('error', 'Por favor, selecciona un comprobante antes de continuar.');
       return;
     }
 
@@ -894,13 +854,13 @@ export default function App() {
         );
         return;
       }
-      const receiptPath = await uploadReceipt(receipt, order.ticketCode);
+      const receiptPath = await uploadReceipt(fileOverride, order.ticketCode);
       const { error } = await supabase.from('registrations').insert({
         full_name: order.fullName,
         age: order.age,
         phone: order.phone,
         email: order.email,
-        role: order.role,
+        team: order.team,
         fee: order.fee,
         payment_ref: order.paymentRef,
         status: 'pending',
@@ -933,24 +893,20 @@ export default function App() {
 
             {step === 1 && (
               <section className="card">
-                <h2>Elige tu participación</h2>
-                <button className="cta" onClick={() => handleStart('runner')}>
-                  👟 Quiero correr · $200
-                </button>
-                <button className="cta" onClick={() => handleStart('walker')}>
-                  🚶 Quiero caminar · $100
+                <h2>¿Quieres participar?</h2>
+                <button className="cta" onClick={handleStart}>
+                  👟 ¡Quiero unirme! · $200
                 </button>
               </section>
             )}
 
             {step === 2 && (
-              <RegistrationForm role={role} onBack={() => setStep(1)} onSubmit={handleSubmitData} />
+              <RegistrationForm onBack={() => setStep(1)} onSubmit={handleSubmitData} />
             )}
 
             {step === 3 && order && (
               <PaymentStep
                 order={order}
-                onUpload={handleUpload}
                 onFinalize={handleFinalize}
                 saving={saving}
                 show={show}
@@ -967,7 +923,7 @@ export default function App() {
 
         <footer className="footer">
           <span>Hecho con ❤️ en Nogales.</span>
-          <span>Contacto: 631 10 88310 · TEApoyo Nogales</span>
+          <span>Contacto: 631 30 39334 · AltruistamenteLocos</span>
         </footer>
 
         <Toast />
