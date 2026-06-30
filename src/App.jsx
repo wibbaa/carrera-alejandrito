@@ -37,7 +37,7 @@ function Info() {
         Inscripción: <strong>$200 MXN</strong>
       </p>
       <p style={{ color: 'var(--muted)' }}>
-        Alejandrito vive con Atrofia Muscular Espinal (AME), una condición que afecta sus músculos
+        Alejandrito vive con Parálisis Cerebral Infantil (PCI), una condición que afecta sus músculos
         y movilidad. Todo lo recaudado será destinado a la compra del{' '}
         <strong>exoesqueleto para la movilidad y rehabilitación de Alejandrito.</strong> ¡Gracias
         por sumarte!
@@ -72,7 +72,7 @@ function WhyParticipate() {
     <section className="card">
       <h2>💙 ¿Por qué participar?</h2>
       <p>
-        Alejandrito vive con <strong>Atrofia Muscular Espinal (AME)</strong>, una condición que
+        Alejandrito vive con <strong>Parálisis Cerebral Infantil (PCI)</strong>, una condición que
         afecta sus músculos y movilidad. Su familia trabaja incansablemente para darle una mejor
         calidad de vida.
       </p>
