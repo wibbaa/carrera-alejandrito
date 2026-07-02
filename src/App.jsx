@@ -687,7 +687,17 @@ function AdminPanel({ show }) {
                 </td>
                 <td>
                   <div className="row" style={{ gap: 6 }}>
-                    <button className="cta" onClick={() => changeStatus(r.id, 'verified')}>
+                    <button
+                      className="cta"
+                      onClick={async () => {
+                        await changeStatus(r.id, 'verified');
+                        const msg = encodeURIComponent(
+                          `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                        );
+                        const phone = r.phone.replace(/\D/g, '');
+                        window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                      }}
+                    >
                       Verificar
                     </button>
                     <button
@@ -738,7 +748,17 @@ function AdminPanel({ show }) {
                   {openReceiptId === r.id ? 'Ocultar' : 'Ver recibo'}
                 </button>
               )}
-              <button className="cta" onClick={() => changeStatus(r.id, 'verified')}>
+              <button
+                className="cta"
+                onClick={async () => {
+                  await changeStatus(r.id, 'verified');
+                  const msg = encodeURIComponent(
+                    `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                  );
+                  const phone = r.phone.replace(/\D/g, '');
+                  window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                }}
+              >
                 ✔️
               </button>
               <button
