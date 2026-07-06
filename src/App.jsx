@@ -209,14 +209,16 @@ function RegistrationForm({ onBack, onSubmit }) {
   const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
   const [team, setTeam] = useState('');
+  const [phonePrefix, setPhonePrefix] = useState('+52');
   const fee = 200;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!fullName || !age || !phone || !email || !team) return;
-    onSubmit({ fullName, age: Number(age), phone, email, team, fee });
+    if (!fullName || !age || !phone || !team) return;
+    const digits = String(phone || '').replace(/\D/g, '');
+    const normalizedPhone = `${phonePrefix}${digits}`;
+    onSubmit({ fullName, age: Number(age), phone: normalizedPhone, team, fee });
   };
 
   return (
@@ -240,11 +242,13 @@ function RegistrationForm({ onBack, onSubmit }) {
         </label>
         <label>
           Teléfono / WhatsApp
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
-        </label>
-        <label>
-          Correo electrónico
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <div style={{ display: 'flex', gap: 8 }}>
+            <select value={phonePrefix} onChange={(e) => setPhonePrefix(e.target.value)}>
+              <option value="+52">+52 MX</option>
+              <option value="+1">+1 US</option>
+            </select>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          </div>
         </label>
         <label>
           Nombre del equipo
@@ -419,7 +423,7 @@ function Ticket({ order, show }) {
         <p className="ticket-details">
           ${order.fee} MXN · {order.fullName}
         </p>
-        <p className="ticket-details">{order.email}</p>
+        {/* email removed from the registration form */}
       </div>
       <div className="row" style={{ justifyContent: 'center', gap: 8, marginTop: 16 }}>
         <button
@@ -521,6 +525,14 @@ function AdminPanel({ show }) {
   const [openReceiptId, setOpenReceiptId] = useState(null);
   const [receiptUrls, setReceiptUrls] = useState({});
 
+  function normalizeForWhatsApp(raw) {
+    const s = String(raw || '');
+    const digits = s.replace(/\D/g, '');
+    if (s.startsWith('+')) return digits; // already has country code
+    if (digits.length === 10) return `52${digits}`; // assume MX
+    return digits; // best-effort
+  }
+
   async function load() {
     setLoading(true);
     let query = supabase
@@ -528,10 +540,7 @@ function AdminPanel({ show }) {
       .select('*')
       .order('created_at', { ascending: false });
     if (status !== 'all') query = query.eq('status', status);
-    if (q)
-      query = query.or(
-        `full_name.ilike.%${q}%,email.ilike.%${q}%,ticket_code.ilike.%${q}%`
-      );
+    if (q) query = query.or(`full_name.ilike.%${q}%,ticket_code.ilike.%${q}%`);
     const { data, error } = await query;
     if (error) show('error', error.message);
     else setRows(data);
@@ -629,11 +638,7 @@ function AdminPanel({ show }) {
 
       {/* Search + export */}
       <div className="row" style={{ gap: 8, marginBottom: 10 }}>
-        <input
-          placeholder="Buscar nombre/email/ticket"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
+        <input placeholder="Buscar nombre/ticket" value={q} onChange={(e) => setQ(e.target.value)} />
         <button className="cta" onClick={load} disabled={loading}>
           Buscar
         </button>
@@ -651,7 +656,6 @@ function AdminPanel({ show }) {
               <th>Nombre</th>
               <th>Equipo</th>
               <th>Monto</th>
-              <th>Email</th>
               <th>Ticket</th>
               <th>Status</th>
               <th>Recibo</th>
@@ -665,7 +669,6 @@ function AdminPanel({ show }) {
                 <td>{r.full_name}</td>
                 <td>{r.team || '—'}</td>
                 <td>${r.fee}</td>
-                <td>{r.email}</td>
                 <td>{r.ticket_code}</td>
                 <td>{r.status}</td>
                 <td>
@@ -694,8 +697,8 @@ function AdminPanel({ show }) {
                         const msg = encodeURIComponent(
                           `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
                         );
-                        const phone = r.phone.replace(/\D/g, '');
-                        window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                        const phone = normalizeForWhatsApp(r.phone);
+                        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                       }}
                     >
                       Verificar
@@ -707,8 +710,8 @@ function AdminPanel({ show }) {
                         const msg = encodeURIComponent(
                           `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
                         );
-                        const phone = r.phone.replace(/\D/g, ''); // quita guiones, espacios, etc.
-                        window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
+                        const phone = normalizeForWhatsApp(r.phone);
+                        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                       }}
                     >
                       Rechazar
@@ -726,7 +729,6 @@ function AdminPanel({ show }) {
         {rows.map((r) => (
           <div key={r.id} className="admin-card">
             <h4>{r.full_name}</h4>
-            <p>📧 {r.email}</p>
             <p>🎫 {r.ticket_code}</p>
             <p>
               Equipo: {r.team || '—'} · ${r.fee}
@@ -736,44 +738,44 @@ function AdminPanel({ show }) {
             </p>
             <div className="actions">
               {r.receipt_path && (
-                <button
-                  className="cta"
-                  onClick={() => viewReceipt(r.id, r.receipt_path)}
-                  style={{
-                    backgroundColor:
-                      openReceiptId === r.id ? 'var(--primary-dark)' : 'var(--primary)',
-                    opacity: openReceiptId === r.id ? 0.8 : 1,
-                  }}
-                >
-                  {openReceiptId === r.id ? 'Ocultar' : 'Ver recibo'}
-                </button>
+                  <button
+                    className="cta"
+                    onClick={() => viewReceipt(r.id, r.receipt_path)}
+                    style={{
+                      backgroundColor:
+                        openReceiptId === r.id ? 'var(--primary-dark)' : 'var(--primary)',
+                      opacity: openReceiptId === r.id ? 0.8 : 1,
+                    }}
+                  >
+                    {openReceiptId === r.id ? 'Ocultar' : 'Ver recibo'}
+                  </button>
               )}
-              <button
-                className="cta"
-                onClick={async () => {
-                  await changeStatus(r.id, 'verified');
-                  const msg = encodeURIComponent(
-                    `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
-                  );
-                  const phone = r.phone.replace(/\D/g, '');
-                  window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
-                }}
-              >
-                ✔️
-              </button>
-              <button
-                className="cta"
-                onClick={async () => {
-                  await changeStatus(r.id, 'rejected');
-                  const msg = encodeURIComponent(
-                    `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
-                  );
-                  const phone = r.phone.replace(/\D/g, ''); // quita guiones, espacios, etc.
-                  window.open(`https://wa.me/52${phone}?text=${msg}`, '_blank');
-                }}
-              >
-                ❌
-              </button>
+                  <button
+                    className="cta"
+                    onClick={async () => {
+                      await changeStatus(r.id, 'verified');
+                      const msg = encodeURIComponent(
+                        `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                      );
+                      const phone = normalizeForWhatsApp(r.phone);
+                      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+                    }}
+                  >
+                    ✔️
+                  </button>
+                  <button
+                    className="cta"
+                    onClick={async () => {
+                      await changeStatus(r.id, 'rejected');
+                      const msg = encodeURIComponent(
+                        `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
+                      );
+                      const phone = normalizeForWhatsApp(r.phone);
+                      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+                    }}
+                  >
+                    ❌
+                  </button>
             </div>
           </div>
         ))}
@@ -893,29 +895,34 @@ export default function App() {
 
     try {
       setSaving(true);
+      // normalize phone (store digits only) and check duplicates by payment_ref or phone
+      const phoneDigits = String(order.phone || '').replace(/\D/g, '');
 
-      // Verificar duplicado por email y payment_ref (ya no tenemos ticketCode aún)
       const { count } = await supabase
         .from('registrations')
         .select('id', { count: 'exact', head: true })
-        .or(`payment_ref.eq.${order.paymentRef},email.eq.${order.email}`);
+        .or(`payment_ref.eq.${order.paymentRef},phone.eq.${phoneDigits}`);
 
       if (count && count > 0) {
         show('error', 'Ya existe un registro con estos datos. Si tienes problemas, contacta al organizador.');
         return;
       }
 
-      // 1. Insertar sin receipt_path primero para obtener el ticket_code generado por el trigger
+      // Upload receipt first with a unique temporary folder to avoid concurrent update races
+      const baseName = `tmp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      const receiptPath = await uploadReceipt(fileOverride, baseName);
+
+      // Insert registration including the receipt_path so it's a single atomic row insert
       const { data: insertData, error: insertError } = await supabase
         .from('registrations')
         .insert({
           full_name: order.fullName,
           age: order.age,
-          phone: order.phone,
-          email: order.email,
+          phone: phoneDigits,
           team: order.team,
           fee: order.fee,
           payment_ref: order.paymentRef,
+          receipt_path: receiptPath,
           status: 'pending',
         })
         .select('ticket_code')
@@ -928,21 +935,7 @@ export default function App() {
 
       const generatedTicketCode = insertData.ticket_code;
 
-      // 2. Subir el recibo usando el folio generado como nombre de archivo
-      const receiptPath = await uploadReceipt(fileOverride, generatedTicketCode);
-
-      // 3. Actualizar el registro con la ruta del recibo
-      const { error: updateError } = await supabase
-        .from('registrations')
-        .update({ receipt_path: receiptPath })
-        .eq('ticket_code', generatedTicketCode);
-
-      if (updateError) {
-        show('error', updateError.message);
-        return;
-      }
-
-      // 4. Guardar el ticketCode en el order para mostrarlo en el Ticket
+      // store ticket code in order for UI
       setOrder((prev) => ({ ...prev, ticketCode: generatedTicketCode }));
 
       show('success', 'Tu registro fue enviado, ¡Gracias!');

@@ -1,10 +1,11 @@
 import { supabase } from './supabase';
 
-export async function uploadReceipt(file, ticketCode) {
+export async function uploadReceipt(file, baseName) {
   if (!file) throw new Error('No file provided');
   const ext = (file.name?.split('.').pop() || 'jpg').toLowerCase();
   const safeExt = ['jpg', 'jpeg', 'png', 'webp', 'pdf'].includes(ext) ? ext : 'jpg';
-  const path = `${ticketCode}/${Date.now()}.${safeExt}`;
+  const folder = baseName || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const path = `${folder}/${Date.now()}.${safeExt}`;
 
   const { data, error } = await supabase.storage
     .from('receipts')
