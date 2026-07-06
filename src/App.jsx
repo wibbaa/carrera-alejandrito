@@ -240,16 +240,31 @@ function RegistrationForm({ onBack, onSubmit }) {
             required
           />
         </label>
-        <label>
-          Teléfono / WhatsApp
-          <div style={{ display: 'flex', gap: 8 }}>
-            <select value={phonePrefix} onChange={(e) => setPhonePrefix(e.target.value)}>
-              <option value="+52">+52 🇲🇽</option>
-              <option value="+1">+1 🇺🇸</option>
-            </select>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
-          </div>
-        </label>
+            <label>
+              Teléfono / WhatsApp
+              <div className="phone-input-wrap">
+                <select
+                  className="phone-prefix"
+                  value={phonePrefix}
+                  onChange={(e) => setPhonePrefix(e.target.value)}
+                  aria-label="Prefijo de país"
+                >
+                  <option value="+52">🇲🇽 +52</option>
+                  <option value="+1">🇺🇸 +1</option>
+                </select>
+                <input
+                  className="phone-number"
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="(ej. 6123456789)"
+                  required
+                  aria-label="Número de teléfono"
+                />
+              </div>
+            </label>
         <label>
           Nombre del equipo
           <input value={team} onChange={(e) => setTeam(e.target.value)} required />

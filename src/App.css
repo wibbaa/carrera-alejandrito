@@ -104,6 +104,7 @@ button.cta:hover, a.cta:hover { background: var(--primary-600); }
 .form-grid input[type="text"],
 .form-grid input[type="email"],
 .form-grid input[type="number"],
+.form-grid input[type="tel"],
 .upload input[type="file"] {
   margin-top: 4px;
   background: rgba(255, 255, 255, 0.06);
@@ -114,6 +115,36 @@ button.cta:hover, a.cta:hover { background: var(--primary-600); }
 }
 @media (max-width: 720px) {
   .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Phone field: prefix + number inline */
+.phone-input-wrap {
+  position: relative;
+}
+.phone-input-wrap .phone-prefix {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: calc(100% - 8px);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  z-index: 2;
+  padding: 4px 8px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.phone-input-wrap .phone-prefix:focus { outline: none; }
+.phone-input-wrap .phone-number {
+  width: 100%;
+  padding-left: 110px;
+}
+
+@media (max-width: 420px) {
+  .phone-input-wrap .phone-prefix { left: 8px; padding: 4px 6px; }
+  .phone-input-wrap .phone-number { padding-left: 92px; }
 }
 
 }
