@@ -244,8 +244,8 @@ function RegistrationForm({ onBack, onSubmit }) {
           Teléfono / WhatsApp
           <div style={{ display: 'flex', gap: 8 }}>
             <select value={phonePrefix} onChange={(e) => setPhonePrefix(e.target.value)}>
-              <option value="+52">+52 MX</option>
-              <option value="+1">+1 US</option>
+              <option value="+52">+52 MX 🇲🇽</option>
+              <option value="+1">+1 US 🇺🇸</option>
             </select>
             <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
           </div>
