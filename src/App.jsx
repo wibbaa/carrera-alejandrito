@@ -710,7 +710,7 @@ function AdminPanel({ show }) {
                       onClick={async () => {
                         await changeStatus(r.id, 'verified');
                         const msg = encodeURIComponent(
-                          `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                          `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA para el equipo *${r.team}*. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
                         );
                         const phone = normalizeForWhatsApp(r.phone);
                         window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
