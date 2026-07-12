@@ -540,11 +540,12 @@ function AdminPanel({ show }) {
   const [openReceiptId, setOpenReceiptId] = useState(null);
   const [receiptUrls, setReceiptUrls] = useState({});
 
-  function normalizeForSMS(raw) {
-    const s = String(raw || '').trim();
-    if (s.startsWith('+')) return s;
+  function normalizeForWhatsApp(raw) {
+    const s = String(raw || '');
     const digits = s.replace(/\D/g, '');
-    return `+${digits}`;
+    if (s.startsWith('+')) return digits; // already has country code
+    if (digits.length === 10) return `52${digits}`; // assume MX
+    return digits; // best-effort
   }
 
   async function load() {
@@ -709,10 +710,10 @@ function AdminPanel({ show }) {
                       onClick={async () => {
                         await changeStatus(r.id, 'verified');
                         const msg = encodeURIComponent(
-                          `¡Hola ${r.full_name}! Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA para el equipo ${r.team}. Tu folio es ${r.ticket_code}. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                          `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA para el equipo *${r.team}*. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
                         );
-                        const phone = normalizeForSMS(r.phone);
-                        window.open(`sms:${phone}?body=${msg}`, '_blank');
+                        const phone = normalizeForWhatsApp(r.phone);
+                        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                       }}
                     >
                       Verificar
@@ -724,8 +725,8 @@ function AdminPanel({ show }) {
                         const msg = encodeURIComponent(
                           `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
                         );
-                        const phone = normalizeForSMS(r.phone);
-                        window.open(`sms:${phone}?body=${msg}`, '_blank');
+                        const phone = normalizeForWhatsApp(r.phone);
+                        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                       }}
                     >
                       Rechazar
@@ -769,10 +770,10 @@ function AdminPanel({ show }) {
                     onClick={async () => {
                       await changeStatus(r.id, 'verified');
                       const msg = encodeURIComponent(
-                        `¡Hola ${r.full_name}! Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA para el equipo ${r.team}. Tu folio es ${r.ticket_code}. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
+                        `¡Hola ${r.full_name}! 🎉 Tu inscripción a la Carrera por Alejandrito fue CONFIRMADA para el equipo *${r.team}*. Tu folio es *${r.ticket_code}*. Te esperamos el domingo 12 de julio a las 6:30 a.m. en Plaza Miguel Hidalgo. ¡Gracias por apoyar esta causa! 💙`
                       );
-                      const phone = normalizeForSMS(r.phone);
-                      window.open(`sms:${phone}?body=${msg}`, '_blank');
+                      const phone = normalizeForWhatsApp(r.phone);
+                      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                     }}
                   >
                     ✔️
@@ -784,8 +785,8 @@ function AdminPanel({ show }) {
                       const msg = encodeURIComponent(
                         `Hola ${r.full_name}, lamentablemente tu inscripción a la Carrera por Alejandrito (folio ${r.ticket_code}) fue rechazada. Por favor contáctanos para más información. ¡Gracias por tu apoyo! 💙`
                       );
-                      const phone = normalizeForSMS(r.phone);
-                      window.open(`sms:${phone}?body=${msg}`, '_blank');
+                      const phone = normalizeForWhatsApp(r.phone);
+                      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
                     }}
                   >
                     ❌
