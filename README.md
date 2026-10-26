@@ -1,6 +1,6 @@
 # LANDING PAGE - CARRERA ALEJANDRITO
 
-Landing page para carrera en beneficio de Alejandrito.
+Landing page para carrera en beneficio de Alejandrito, organizada por Altruistamente Locos. https://www.instagram.com/altruistamentelocos_/
 
 Desarrollada enteramente en el framework de React + Vite, con panel de administrador, optimizada y amigable para su uso en dispositivos móviles y base de datos desarrollada en la nube de Supabase (PostgreSQL).
 
